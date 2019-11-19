@@ -1,0 +1,143 @@
+/* ROOT */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* UTILITY */
+.container {
+  width: 80%;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* NAV */
+.main-nav {
+  border-bottom: thin black solid;
+  padding: 0.5rem;
+  min-height: 7vh;
+}
+
+.main-nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-nav .nav-right {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.main-nav .nav-brand,
+.main-nav .nav-item {
+  text-decoration: none;
+}
+
+.main-nav .nav-item {
+  padding: 0.5rem 0.1rem 0.25rem 0.1rem;
+  border-bottom: transparent solid 2px;
+  margin: 0 1rem;
+}
+.main-nav #nav-insert {
+  color: black;
+}
+.main-nav #nav-update-delete {
+  color: black;
+}
+.main-nav #nav-query {
+  color: black;
+}
+
+.main-nav .nav-current,
+.main-nav .nav-item:hover {
+  border-color: rgb(47, 144, 255);
+}
+
+.main-nav .nav-brand {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: black;
+}
+
+/* CONTENT BODY */
+.content-body {
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  height: 92vh;
+  overflow-y: scroll;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar-item {
+  padding: 1rem;
+  border-bottom: thin solid black;
+  cursor: pointer;
+}
+
+.sidebar-current,
+.sidebar-item:hover {
+  background-color: rgb(182, 182, 182);
+  color: white;
+}
+
+/* TABLE */
+.main-table {
+  overflow-x: scroll;
+}
+.main-table table {
+  margin: 3rem 0 0 3rem;
+  border-collapse: collapse;
+}
+
+.main-table table {
+  border: thin solid black;
+}
+
+.main-table th,
+.main-table td {
+  border-top: thin solid black;
+  border-bottom: thin solid black;
+}
+
+.main-table .button-cell i {
+  display: inline;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  /* tmp */
+  /* padding: 1rem; */
+}
+.main-table .button-cell .delete-button {
+  color: rgb(255, 72, 0);
+  /* tmp */
+  /* background-color: rgb(255, 72, 0); */
+}
+.main-table .button-cell .edit-button {
+  color: rgb(47, 144, 255);
+  /* tmp */
+  /* background-color: rgb(47, 144, 255); */
+}
+.main-table .button-cell button {
+  padding: 0.25rem;
+}
+
+.main-table td,
+.main-table th {
+  padding: 0.6rem;
+}
+
+.main-table th {
+  background-color: whitesmoke;
+}
+
+.main-table tr:nth-child(odd) {
+  background-color: rgb(245, 245, 245);
+}
