@@ -1,3 +1,7 @@
+# This environment is set up by Brad Traversy ... I implement my own project ... below are setup guides by Brad Traversy
+
+---------------------------------------------------------------------------------------------------------------------
+
 # React Express Starter Pack
 
 > Create full stack apps with React and Express. Run your client and server with a single command. 
