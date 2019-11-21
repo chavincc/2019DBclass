@@ -5,6 +5,7 @@ import './components/main.css';
 
 import { Provider } from './context';
 import Nav from './components/layout/Nav';
+import Home from './components/page/Home';
 import Edit from './components/page/Edit';
 import Insert from './components/page/Insert';
 
@@ -16,6 +17,7 @@ class App extends Component {
           <Router>
             <Nav />
             <Switch>
+              <Route exact path="/" component={Home} />
               <Route exact path="/edit" component={Edit} />
               <Route exact path="/insert" component={Insert} />
             </Switch>

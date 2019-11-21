@@ -21,7 +21,9 @@ class Nav extends Component {
       <div className="main-nav">
         <div className="container">
           <div className="nav-left">
-            <p className="nav-brand">Tutor Here</p>
+            <Link className="nav-brand" to="/" onClick={this.changeCurrent}>
+              Tutor Here
+            </Link>
           </div>
           <div className="nav-right">
             <Link

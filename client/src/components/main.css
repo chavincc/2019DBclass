@@ -12,6 +12,11 @@
   margin: auto;
 }
 
+.italic {
+  color: gray;
+  font-style: italic;
+}
+
 /* NAV */
 .main-nav {
   border-bottom: thin black solid;
@@ -60,6 +65,38 @@
   font-weight: bold;
   font-size: 1.2rem;
   color: black;
+}
+
+/* HOME */
+.home-body {
+  position: relative;
+  left: 50vw;
+  transform: translateX(-50%);
+  margin-top: 3rem;
+  width: 60%;
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.home-body > h2 {
+  margin-bottom: 0.5rem;
+}
+
+.info-group {
+  width: 400px;
+  text-align: left;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: thin solid black;
+  border-radius: 10px;
+}
+.info-group h3 {
+  margin-left: 1rem;
+  text-decoration: underline;
+  margin-bottom: 0.5rem;
 }
 
 /* CONTENT BODY */
@@ -112,18 +149,12 @@
   display: inline;
   margin-right: 0.75rem;
   cursor: pointer;
-  /* tmp */
-  /* padding: 1rem; */
 }
 .main-table .button-cell .delete-button {
   color: rgb(255, 72, 0);
-  /* tmp */
-  /* background-color: rgb(255, 72, 0); */
 }
 .main-table .button-cell .edit-button {
   color: rgb(47, 144, 255);
-  /* tmp */
-  /* background-color: rgb(47, 144, 255); */
 }
 .main-table .button-cell button {
   padding: 0.25rem;
@@ -136,8 +167,123 @@
 
 .main-table th {
   background-color: whitesmoke;
+  text-transform: lowercase;
 }
 
 .main-table tr:nth-child(odd) {
   background-color: rgb(245, 245, 245);
+}
+
+/* INSERT */
+.insert-body-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#fraction-0 {
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 2;
+}
+#fraction-1 {
+  grid-row: 2 / span 1;
+  grid-column: 1 / span 1;
+}
+#fraction-2 {
+  grid-row: 2 / span 1;
+  grid-column: 2 / span 1;
+}
+#fraction-3 {
+  grid-row: 3 / span 1;
+  grid-column: 1 / span 1;
+}
+#fraction-4 {
+  grid-row: 3 / span 1;
+  grid-column: 2 / span 1;
+}
+#fraction-5 {
+  grid-row: 4 / span 1;
+  grid-column: 1 / span 2;
+}
+#fraction-6 {
+  grid-row: 5 / span 1;
+  grid-column: 1 / span 2;
+}
+#fraction-7 {
+  grid-row: 5 / span 1;
+  grid-column: 2 / span 1;
+}
+#fraction-8 {
+  grid-row: 6 / span 1;
+  grid-column: 1 / span 1;
+}
+#fraction-9 {
+  grid-row: 6 / span 1;
+  grid-column: 2 / span 1;
+}
+#fraction-10 {
+  /* margin: auto; */
+  grid-row: 7 / span 3;
+  grid-column: 1 / span 2;
+}
+#create-user-button {
+  grid-row: auto;
+  grid-column: 1 / span 2;
+  margin: auto;
+}
+
+.insert-body {
+  display: grid;
+  grid-gap: 0;
+  grid-template-rows: repeat(10, 50px);
+  grid-template-columns: repeat(2, 250px);
+  border: thin black solid;
+  padding: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.insert-header {
+  margin-top: 2.5rem;
+  padding-bottom: 1rem;
+  border: thin solid black;
+  border-bottom: none;
+  width: 531px;
+  padding: 15px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.insert-body .radio-group {
+  width: 60%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.insert-body .input-group {
+  display: flex;
+  align-items: center;
+}
+
+.insert-body .text-area-group {
+  display: flex;
+}
+
+.insert-body .text-area-group textarea {
+  height: 140px;
+  width: 90%;
+}
+
+.insert-body .text-area-group label,
+.insert-body .input-group label {
+  margin-right: 5px;
+}
+
+.insert-body button {
+  display: block;
+  width: 300px;
+  height: 35px;
 }

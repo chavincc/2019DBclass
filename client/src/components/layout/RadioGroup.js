@@ -6,35 +6,36 @@ export default class RadioGroup extends Component {
     return (
       <Consumer>
         {value => {
-          const { name } = this.props;
+          const { name, id } = this.props;
           const description = value.insertFormValue[name].description;
           const updateInsertForm = e => {
-            console.log(e.target.value);
-            // value.dispatch({
-            //   type: 'UPDATE_INSERT_FORM',
-            //   payload: {
-            //     name: e.target.name,
-            //     value: e.target.value
-            //   }
-            // });
+            value.dispatch({
+              type: 'UPDATE_INSERT_FORM_RADIO',
+              payload: {
+                value: e.target.value,
+                name: e.target.name,
+                defineAs: e.target.id.split('-')[1]
+              }
+            });
           };
-          return (
-            <div className="radio-group">
+          return description ? (
+            <div className="radio-group" id={id}>
               <label htmlFor={name}>{name}</label>
               {Object.keys(description).map(key => (
                 <div className="radio-fraction">
                   <input
                     type="radio"
                     name={name}
-                    value={description[key]}
+                    id={'radio-' + key}
+                    value={description[key]['value']}
+                    checked={description[key]['checked']}
                     onChange={updateInsertForm}
                   />
                   {key}
-                  <br />
                 </div>
               ))}
             </div>
-          );
+          ) : null;
         }}
       </Consumer>
     );

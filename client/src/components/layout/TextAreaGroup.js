@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Consumer } from '../../context';
 
-export default class InputGroup extends Component {
+export default class TextAreaGroup extends Component {
   render() {
     return (
       <Consumer>
         {value => {
-          const { name, formVal, type, id } = this.props;
+          const { name, formValue, id, disable } = this.props;
           const updateInsertForm = e => {
             value.dispatch({
               type: 'UPDATE_INSERT_FORM',
@@ -17,16 +17,18 @@ export default class InputGroup extends Component {
             });
           };
           return (
-            <div className="input-group" id={id}>
+            <div className="text-area-group" id={id}>
               <label htmlFor={name}>{name}</label>
-              <input
-                id={'input-' + name}
-                onChange={updateInsertForm}
+              <textarea
                 name={name}
-                value={formVal}
-                type={type}
-                autoComplete="off"
-              />
+                id={'text-area-' + name}
+                cols="30"
+                rows="10"
+                value={formValue}
+                onChange={updateInsertForm}
+                maxLength="200"
+                disabled={!disable}
+              ></textarea>
             </div>
           );
         }}

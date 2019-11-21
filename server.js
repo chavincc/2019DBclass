@@ -26,12 +26,18 @@ const typeNeedQuote = type => {
   return true;
 };
 
+const addQuote = (type, data) => {
+  let out = data;
+  if (typeNeedQuote(type)) {
+    out = `'${data}'`;
+  }
+  return out;
+};
+
 const formatData = (type, data) => {
   if (type.includes('date') || type.includes('time')) {
     data = data.replace('Z', '').replace('T', ' ');
   }
-  console.log(type, data);
-
   return data;
 };
 
@@ -81,7 +87,6 @@ const deleteFromDB = async (tableName, keys, values, types) => {
     }
 
     let qstring = `delete from ${tableName} ${qWhere}`;
-    console.log(qstring);
     const result = await query(qstring);
     return result;
   } catch (error) {
@@ -122,7 +127,6 @@ const updateDB = async (
     }
 
     let qString = `update ${tableName} ${qSet} ${qWhere}`;
-    console.log(qString);
 
     const result = await query(qString);
     return result;
@@ -160,6 +164,24 @@ const insertIntoDB = async (tableName, keys, values, types) => {
     return { error: true };
   }
 };
+
+const findUser = async userID => {
+  let qstring = `select * from USR where USERID= '${userID}'`;
+  const res = await query(qstring);
+  return res;
+};
+
+app.get('/api/user', (req, res) => {
+  const userID = req.query.id;
+  findUser(userID)
+    .then(value => {
+      if (value.length === 0) res.json({ found: false });
+      else res.json({ found: true });
+    })
+    .catch(error => {
+      res.json({ error: true, message: error });
+    });
+});
 
 app.get('/api/allTableName', (req, res) => {
   getAllTableName()
@@ -275,6 +297,37 @@ app.post('/api/rows', (req, res) => {
     res.json({
       error: true
     });
+  }
+});
+
+app.post('/api/tutor', (req, res) => {
+  try {
+    const {
+      userType,
+      userID,
+      firstname,
+      lastname,
+      gender,
+      birthday,
+      phone,
+      username,
+      latitude,
+      longitude,
+      password,
+      bio
+    } = req.body;
+    let qstring = `CALL INSERT_USER(
+    ${addQuote('int', userType)},
+    ${addQuote('char', userID)}, ${addQuote('char', firstname)},
+    ${addQuote('char', lastname)}, ${addQuote('int', gender)},
+    ${addQuote('date', birthday)}, ${addQuote('char', phone)},
+    ${addQuote('char', username)}, ${addQuote('int', latitude)},
+    ${addQuote('int', longitude)}, ${addQuote('char', password)},
+    ${addQuote('char', bio)})`;
+    query(qstring);
+    res.json({ success: true });
+  } catch (error) {
+    res.json({ error: true });
   }
 });
 

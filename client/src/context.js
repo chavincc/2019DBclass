@@ -1,57 +1,10 @@
 import React, { Component } from 'react';
+import Config from './Config';
+import uuid from 'uuid';
 
 const Context = React.createContext();
 
-const defaultInsertFormValue = {
-  username: {
-    value: '',
-    type: 'text'
-  },
-  password: {
-    value: '',
-    type: 'password'
-  },
-  firstname: {
-    value: '',
-    type: 'text'
-  },
-  lastname: {
-    value: '',
-    type: 'text'
-  },
-  gender: {
-    value: 0,
-    type: 'radio',
-    description: {
-      male: 0,
-      female: 1
-    }
-  },
-  birthday: {
-    value: '',
-    type: 'date'
-  },
-  latitude: {
-    value: 0,
-    type: 'number'
-  },
-  longitude: {
-    value: 0,
-    type: 'number'
-  },
-  isTutor: {
-    value: 0,
-    type: 'radio',
-    description: {
-      student: 0,
-      tutor: 1
-    }
-  },
-  bio: {
-    value: '',
-    type: 'textarea'
-  }
-};
+const defaultInsertFormValue = Config.defaultInsertFormValue;
 
 const reducer = async (state, action) => {
   switch (action.type) {
@@ -113,6 +66,46 @@ const reducer = async (state, action) => {
         editMode: false
       };
 
+    case 'STORE_USER':
+      const userType = action.payload;
+      const ifvRef = state.insertFormValue;
+      const insertBodyData = {};
+      Object.keys(ifvRef).forEach(key => {
+        if (ifvRef[key].type === 'radio') {
+          const ref = ifvRef[key]['description'];
+          Object.keys(ref).forEach(k => {
+            if (ref[k].checked) insertBodyData[key] = ref[k].value;
+          });
+        } else {
+          insertBodyData[key] = ifvRef[key].value;
+        }
+      });
+      insertBodyData['userID'] = uuid().substring(0, 15);
+      insertBodyData['userType'] = userType;
+      const tutorInsertRes = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(insertBodyData)
+      }).catch(error => {
+        alert(error);
+      });
+      if (tutorInsertRes.ok) {
+        const tutorInsertFetchRes = await tutorInsertRes.json();
+        if (tutorInsertFetchRes.success) {
+          alert('user created');
+          return {
+            ...state,
+            insertFormValue: Config.defaultInsertFormValue
+          };
+        } else if (tutorInsertFetchRes.error) alert('query error');
+        else alert('not query error');
+      }
+
+      return state;
+
     case 'UPDATE_EDIT_FORM':
       const { name, value } = action.payload;
       const updatedFormValue = state.formValue;
@@ -144,7 +137,6 @@ const reducer = async (state, action) => {
           );
         }
       }
-      console.log(objectBody);
       const postRes = await fetch('/api/rows', {
         method: 'PUT',
         headers: {
@@ -179,6 +171,23 @@ const reducer = async (state, action) => {
       return {
         ...state,
         insertFormValue: newInsertFormValue
+      };
+
+    case 'UPDATE_INSERT_FORM_RADIO':
+      const newInsertRadioValue = state.insertFormValue;
+
+      Object.keys(
+        newInsertRadioValue[action.payload.name]['description']
+      ).forEach(subitem => {
+        const ref =
+          newInsertRadioValue[action.payload.name]['description'][subitem];
+        if (action.payload.defineAs === subitem) ref.checked = true;
+        else ref.checked = false;
+      });
+
+      return {
+        ...state,
+        insertFormValue: newInsertRadioValue
       };
 
     default:
@@ -233,10 +242,6 @@ export class Provider extends Component {
       payload: allTableName[0]
     });
   }
-
-  // componentDidUpdate() {
-  //   console.log('update');
-  // }
 
   render() {
     return (
