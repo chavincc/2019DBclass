@@ -4,8 +4,6 @@ import uuid from 'uuid';
 
 const Context = React.createContext();
 
-const defaultInsertFormValue = Config.defaultInsertFormValue;
-
 const reducer = async (state, action) => {
   switch (action.type) {
     case 'CHANGE_CURRENT_TABLE':
@@ -82,7 +80,7 @@ const reducer = async (state, action) => {
       });
       insertBodyData['userID'] = uuid().substring(0, 15);
       insertBodyData['userType'] = userType;
-      const tutorInsertRes = await fetch('/api/tutor', {
+      const tutorInsertRes = await fetch('/api/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,6 +188,137 @@ const reducer = async (state, action) => {
         insertFormValue: newInsertRadioValue
       };
 
+    case 'UPDATE_QUERY_FORM_CHECKBOX':
+      const newQueryCheckboxValue = state.queryFormValue;
+      newQueryCheckboxValue[
+        action.payload.name
+      ].checked = !newQueryCheckboxValue[action.payload.name].checked;
+      return {
+        ...state,
+        queryFormValue: newQueryCheckboxValue
+      };
+
+    case 'UPDATE_QUERY_FORM':
+      const newQueryValue = state.queryFormValue;
+      newQueryValue[action.payload.name].value = action.payload.value;
+      return {
+        ...state,
+        queryFormValue: newQueryValue
+      };
+
+    case 'FETCH_TUTOR_DOCS':
+      const id = action.payload;
+      const getTest = await fetch(`/api/test?id=${id}`);
+      const getVideo = await fetch(`/api/video?id=${id}`);
+      const getComment = await fetch(`/api/comment?id=${id}`);
+      let newTest, newVideo, newComment;
+      if (getTest.ok && getVideo.ok && getComment.ok) {
+        await getTest
+          .json()
+          .then(value => {
+            newTest = value;
+          })
+          .catch(() => {
+            alert('test query error');
+            return state;
+          });
+        await getVideo
+          .json()
+          .then(value => {
+            newVideo = value;
+          })
+          .catch(() => {
+            alert('video query error');
+            return state;
+          });
+        await getComment
+          .json()
+          .then(value => {
+            newComment = value;
+          })
+          .catch(() => {
+            alert('comment query error');
+            return state;
+          });
+      } else {
+        alert('fetch error');
+        return state;
+      }
+      console.log(newTest, newVideo, newComment, id);
+      return {
+        ...state,
+        tutorTest: newTest,
+        tutorVideo: newVideo,
+        tutorComment: newComment,
+        currentTutorId: id
+      };
+
+    case 'SEARCH_TUTOR':
+      const deg2rad = deg => {
+        return deg * (Math.PI / 180);
+      };
+      const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+        let R = 6371; // Radius of the earth in km
+        let dLat = deg2rad(lat2 - lat1); // deg2rad below
+        let dLon = deg2rad(lon2 - lon1);
+        let a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(lat1)) *
+            Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c; // Distance in km
+        return d;
+      };
+
+      const queryValue = {};
+
+      Object.keys(state.queryFormValue).forEach(key => {
+        if (state.queryFormValue[key].type === 'checkbox') {
+          queryValue[key] = state.queryFormValue[key].checked;
+        } else {
+          queryValue[key] = state.queryFormValue[key].value;
+        }
+      });
+      const searchRes = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(queryValue)
+      });
+      if (searchRes.ok) {
+        const searchResJson = await searchRes.json();
+        if (searchResJson.error) {
+          alert('query error');
+          return state;
+        }
+
+        const filteredSearchRes = [];
+        if (queryValue.distance) {
+          searchResJson.forEach(tutor => {
+            let dist = getDistanceFromLatLonInKm(
+              tutor.LATITUDE,
+              tutor.LONGITUDE,
+              queryValue.myLatitude,
+              queryValue.myLongitude
+            );
+            if (dist < parseInt(queryValue.maxDistance)) {
+              filteredSearchRes.push(tutor);
+            }
+          });
+        }
+        return {
+          ...state,
+          searchResult: queryValue.distance ? filteredSearchRes : searchResJson
+        };
+      } else {
+        alert('fetch error');
+        return state;
+      }
+
     default:
       return state;
   }
@@ -207,7 +336,14 @@ export class Provider extends Component {
     editIdx: null,
     formValue: {},
     //insert
-    insertFormValue: defaultInsertFormValue,
+    insertFormValue: Config.defaultInsertFormValue,
+    //query
+    queryFormValue: Config.defaultQueryFormValue,
+    searchResult: [],
+    tutorTest: null,
+    tutorVideo: null,
+    tutorComment: null,
+    currentTutorId: null,
     //reducer
     dispatch: action => {
       reducer(this.state, action)

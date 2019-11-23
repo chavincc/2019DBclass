@@ -62,6 +62,50 @@ const Config = {
       value: '',
       type: 'textarea'
     }
+  },
+
+  defaultQueryFormValue: {
+    distance: {
+      checked: false,
+      type: 'checkbox'
+    },
+    myLatitude: {
+      value: null,
+      type: 'number',
+      dependency: 'distance'
+    },
+    myLongitude: {
+      value: null,
+      type: 'number',
+      dependency: 'distance'
+    },
+    maxDistance: {
+      value: null,
+      type: 'number',
+      dependency: 'distance'
+    },
+    male: {
+      checked: false,
+      type: 'checkbox'
+    },
+    female: {
+      checked: false,
+      type: 'checkbox'
+    },
+    age: {
+      checked: false,
+      type: 'checkbox'
+    },
+    min: {
+      type: 'number',
+      value: null,
+      dependency: 'age'
+    },
+    max: {
+      type: 'number',
+      value: null,
+      dependency: 'age'
+    }
   }
 };
 

@@ -26,6 +26,7 @@ export default class TextAreaGroup extends Component {
                 rows="10"
                 value={formValue}
                 onChange={updateInsertForm}
+                spellCheck="false"
                 maxLength="200"
                 disabled={!disable}
               ></textarea>

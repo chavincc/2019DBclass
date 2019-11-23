@@ -11,7 +11,6 @@ class Table extends Component {
             currentTableCol,
             currentTableRow,
             editMode,
-            editIdx,
             formValue,
             dispatch
           } = value;

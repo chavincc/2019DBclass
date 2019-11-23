@@ -8,6 +8,8 @@ import Nav from './components/layout/Nav';
 import Home from './components/page/Home';
 import Edit from './components/page/Edit';
 import Insert from './components/page/Insert';
+import Query from './components/page/Query';
+import TutorProfile from './components/page/TutorProfile';
 
 class App extends Component {
   render() {
@@ -20,6 +22,8 @@ class App extends Component {
               <Route exact path="/" component={Home} />
               <Route exact path="/edit" component={Edit} />
               <Route exact path="/insert" component={Insert} />
+              <Route exact path="/query" component={Query} />
+              <Route path="/tutor/:id" component={TutorProfile} />
             </Switch>
           </Router>
         </Provider>

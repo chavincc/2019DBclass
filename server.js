@@ -2,11 +2,13 @@ const express = require('express');
 const mysql = require('mysql');
 const util = require('util');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 const databaseName = 'testdb';
 
@@ -32,6 +34,12 @@ const addQuote = (type, data) => {
     out = `'${data}'`;
   }
   return out;
+};
+
+const getDateFromAge = age => {
+  const date = new Date(Date.now());
+  return `${date.getUTCFullYear() - age}-${date.getMonth() +
+    1}-${date.getDate()}`;
 };
 
 const formatData = (type, data) => {
@@ -303,6 +311,51 @@ app.post('/api/rows', (req, res) => {
 app.post('/api/tutor', (req, res) => {
   try {
     const {
+      distance,
+      myLatitude,
+      myLongitude,
+      maxDistance,
+      male,
+      female,
+      age,
+      min,
+      max
+    } = req.body;
+    let qstring =
+      'select T.TUTORID, U.FIRSTNAME, U.LASTNAME, U.LATITUDE, U.LONGITUDE from TUTOR T, USR U';
+    let clauses = ['U.ISTUTOR=1', 'U.USERID=T.TUTORID'];
+    if (male + female === 1) {
+      if (male) clauses.push('U.GENDER=0');
+      if (female) clauses.push('U.GENDER=1');
+    }
+    if (age) {
+      clauses.push(
+        `U.BIRTHDAY between '${getDateFromAge(max)}' and '${getDateFromAge(
+          min
+        )}'`
+      );
+    }
+    qstring += ' WHERE ';
+    let joinedClause = clauses.join(' AND ');
+    qstring += joinedClause;
+
+    query(qstring)
+      .then(value => {
+        res.json(value);
+      })
+      .catch(error => {
+        console.log(error);
+        res.json(error);
+      });
+  } catch (error) {
+    console.log(error);
+    res.json({ error: true });
+  }
+});
+
+app.post('/api/user', (req, res) => {
+  try {
+    const {
       userType,
       userID,
       firstname,
@@ -329,6 +382,57 @@ app.post('/api/tutor', (req, res) => {
   } catch (error) {
     res.json({ error: true });
   }
+});
+
+app.get('/api/test', (req, res) => {
+  const tutorId = req.query.id;
+  query(`select SC.SCORE, T.TUTORID, SC.TESTNAME from TESTSCORE SC, TUTOR T
+  where SC.TUTORID=T.TUTORID AND T.TUTORID='${tutorId}'`)
+    .then(value => res.json(value))
+    .catch(error => {
+      console.log(error);
+      res.json({ error: true });
+    });
+});
+
+app.get('/api/tutor', (req, res) => {
+  const tutorId = req.query.id;
+  query(
+    `SELECT * FROM USR U, TUTOR T WHERE U.USERID = '${tutorId}' AND T.TUTORID = '${tutorId}'`
+  )
+    .then(value => res.json(value))
+    .catch(error => {
+      console.log(error);
+      res.json({ error: true });
+    });
+});
+
+app.get('/api/video', (req, res) => {
+  const tutorId = req.query.id;
+  query(`SELECT
+  T.TUTORID,V.VIDEOHYPERLINK
+  FROM
+  TUTOR T,VIDEO V
+  where T.TUTORID = V.TUTORID AND T.TUTORID = '${tutorId}'`)
+    .then(value => res.json(value))
+    .catch(error => {
+      console.log(error);
+      res.json({ error: true });
+    });
+});
+
+app.get('/api/comment', (req, res) => {
+  const tutorId = req.query.id;
+  query(`SELECT
+  T.TUTORID,C.DETAIL,C.CREATETIME,C.ISLIKED
+  FROM
+  TUTOR T,COMMENTS C , USR U
+  where T.TUTORID = U.USERID AND T.TUTORID = C.RECIPIENTID AND T.TUTORID = '${tutorId}'`)
+    .then(value => res.json(value))
+    .catch(error => {
+      console.log(error);
+      res.json({ error: true });
+    });
 });
 
 const port = 5000;
