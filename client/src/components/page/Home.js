@@ -17,7 +17,7 @@ export default function Home() {
       </div>
       <div className="info-group">
         <h3>query</h3>
-        <p>work undergo</p>
+        <p>search tutor from your requirement and view their profile</p>
       </div>
     </div>
   );
