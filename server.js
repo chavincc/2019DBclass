@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const util = require('util');
 const bodyParser = require('body-parser');
+const passwordHash = require('password-hash');
 const cors = require('cors');
 
 const app = express();
@@ -310,17 +311,7 @@ app.post('/api/rows', (req, res) => {
 
 app.post('/api/tutor', (req, res) => {
   try {
-    const {
-      distance,
-      myLatitude,
-      myLongitude,
-      maxDistance,
-      male,
-      female,
-      age,
-      min,
-      max
-    } = req.body;
+    const { male, female, age, min, max } = req.body;
     let qstring =
       'select T.TUTORID, U.FIRSTNAME, U.LASTNAME, U.LATITUDE, U.LONGITUDE from TUTOR T, USR U';
     let clauses = ['U.ISTUTOR=1', 'U.USERID=T.TUTORID'];
@@ -369,13 +360,14 @@ app.post('/api/user', (req, res) => {
       password,
       bio
     } = req.body;
+    const hashedPassword = passwordHash.generate(password).substring(0, 30);
     let qstring = `CALL INSERT_USER(
     ${addQuote('int', userType)},
     ${addQuote('char', userID)}, ${addQuote('char', firstname)},
     ${addQuote('char', lastname)}, ${addQuote('int', gender)},
     ${addQuote('date', birthday)}, ${addQuote('char', phone)},
     ${addQuote('char', username)}, ${addQuote('int', latitude)},
-    ${addQuote('int', longitude)}, ${addQuote('char', password)},
+    ${addQuote('int', longitude)}, ${addQuote('char', hashedPassword)},
     ${addQuote('char', bio)})`;
     query(qstring);
     res.json({ success: true });
