@@ -1,3 +1,6 @@
+
+*** the code is unorganized due to purpose of development, timespan and number of developer.
+
 # This environment is set up by Brad Traversy ... I implement my own project ... below are setup guides by Brad Traversy
 
 ---------------------------------------------------------------------------------------------------------------------
